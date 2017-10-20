@@ -10,6 +10,8 @@ class CSS_Press {
 
  // Format
 // ['Sub_ID', 'CSS_Class', 'CSS_properties', 'CSS_value']
+// ['CSS_Class', 'CSS_properties', 'CSS_value'] = ['', 'CSS_Class', 'CSS_properties', 'CSS_value']
+// ['CSS_properties', 'CSS_value'] = ['', '', 'CSS_properties', 'CSS_value']
 
  
 	constructor(){
@@ -40,7 +42,7 @@ class CSS_Press {
 		
 		for (pos = 0; pos < no_style; pos++){
 			
-			[element_id, css_class, css_style, css_value] = JSON_DS[pos];
+			[element_id, css_class, css_style, css_value] = this._normalise(JSON_DS[pos]);
 		
 			// See which parameters are there and which are empty to construct the key by
 			d1 = (element_id.length > 0) ? '1' : '0';
@@ -122,7 +124,7 @@ class CSS_Press {
 		
 		for (pos = 0; pos < no_style; pos++){
 			
-			[element_id, css_class, css_style, css_value] = css_ds[pos];
+			[element_id, css_class, css_style, css_value] = this._normalise(css_ds[pos]);
 			
 			if (css_style.length > 0) {
 				style_obj[css_style] = css_value;
@@ -155,7 +157,7 @@ class CSS_Press {
 	
 		for (pos = 0; pos < no_style; pos++){
 			
-			[element_id, css_class, css_style, css_value] = css_ds[pos];
+			[element_id, css_class, css_style, css_value] = this._normalise(css_ds[pos]);
 					
 			if ((css_style.length > 0) && ((match_id && (element_id == id)))){
 			
@@ -247,7 +249,7 @@ class CSS_Press {
 	}
 	
 	reset_default(ds){
-	// Given Stamper CSS data structure will create a new one that reset the CSS to '',
+	// Given Press CSS data structure will create a new one that reset the CSS to '',
 	// These are class names and css_value will be set to ''
 		
 		var pos, element_id, css_class, css_style, css_value;
@@ -255,7 +257,7 @@ class CSS_Press {
 		var no_style = ds.length;
 		for (pos = 0; pos < no_style; pos++){ // Create hash table for key compare
 			
-			new_arr[pos] = ds[pos].slice;
+			new_arr[pos] = this._normalise(ds[pos].slice);
 			new_arr[pos][CSS_CLASS] = ''; // Set Class name to ''
 			new_arr[pos][CSS_VALUE] = ''; // Set CSS value to ''
 		}
@@ -273,7 +275,7 @@ class CSS_Press {
 		var no_style = ds.length;
 		for (pos = 0; pos < no_style; pos++){ // Create hash table for key compare
 			
-			[element_id, css_class, css_style, css_value] = ds[pos];
+			[element_id, css_class, css_style, css_value] = this._normalise(ds[pos]);
 			
 			element_id = element_id || "-";
 			css_class = css_class || "-";
@@ -302,6 +304,28 @@ class CSS_Press {
 		return ds_css;
 	}
 		
+	_normalise(ref_arr){ // Returns an array of four items, even if the input array only has 2 or 3 fields, pre-pends '' to the 
+						// start of the array
+		
+		var no_field = ref_arr.length;
+		
+		if (no_field == 2){
+			var ret_arr = ['', ''];
+			ret_arr = ret_arr.concat(ref_arr);		
+			return ret_arr;
+		} else if (no_field == 3){
+			var ret_arr = [''];
+			ret_arr = ret_arr.concat(ref_arr);
+			return ret_arr;
+		} else if (no_field == 4){
+				return ref_arr
+		} else {
+		// error, Wrong number of fields
+		
+		}
+	}
+		
+	
 		
 }
 
